@@ -84,117 +84,238 @@ final class Installer
 
     private function createSchema(): void
     {
-        $queries = [
-            'CREATE TABLE users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                full_name TEXT NOT NULL,
-                email TEXT NOT NULL UNIQUE,
-                password_hash TEXT NOT NULL,
-                role TEXT NOT NULL DEFAULT "user",
-                created_at TEXT NOT NULL
-            )',
-            'CREATE TABLE movies (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT NOT NULL,
-                slug TEXT NOT NULL UNIQUE,
-                duration_minutes INTEGER NOT NULL,
-                director TEXT,
-                description TEXT NOT NULL,
-                hero_excerpt TEXT,
-                trailer_url TEXT,
-                poster_path TEXT NOT NULL,
-                hero_path TEXT NOT NULL,
-                status TEXT NOT NULL,
-                release_date TEXT,
-                created_at TEXT NOT NULL
-            )',
-            'CREATE TABLE genres (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                slug TEXT NOT NULL UNIQUE
-            )',
-            'CREATE TABLE movie_genres (
-                movie_id INTEGER NOT NULL,
-                genre_id INTEGER NOT NULL,
-                PRIMARY KEY (movie_id, genre_id),
-                FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE,
-                FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE CASCADE
-            )',
-            'CREATE TABLE halls (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                sort_order INTEGER NOT NULL
-            )',
-            'CREATE TABLE hall_seat_layout (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                hall_id INTEGER NOT NULL,
-                row_label TEXT NOT NULL,
-                seat_number INTEGER NOT NULL,
-                seat_type TEXT NOT NULL DEFAULT "standard",
-                FOREIGN KEY (hall_id) REFERENCES halls(id) ON DELETE CASCADE
-            )',
-            'CREATE TABLE screenings (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                movie_id INTEGER NOT NULL,
-                hall_id INTEGER NOT NULL,
-                screening_date TEXT NOT NULL,
-                screening_time TEXT NOT NULL,
-                price REAL NOT NULL,
-                status TEXT NOT NULL DEFAULT "active",
-                created_at TEXT NOT NULL,
-                FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE,
-                FOREIGN KEY (hall_id) REFERENCES halls(id) ON DELETE CASCADE
-            )',
-            'CREATE TABLE seats (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                screening_id INTEGER NOT NULL,
-                row_label TEXT NOT NULL,
-                seat_number INTEGER NOT NULL,
-                seat_type TEXT NOT NULL DEFAULT "standard",
-                price REAL NOT NULL,
-                status TEXT NOT NULL DEFAULT "available",
-                FOREIGN KEY (screening_id) REFERENCES screenings(id) ON DELETE CASCADE
-            )',
-            'CREATE TABLE reservations (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                screening_id INTEGER NOT NULL,
-                user_id INTEGER,
-                guest_email TEXT,
-                guest_token TEXT,
-                total_price REAL NOT NULL,
-                status TEXT NOT NULL,
-                disability_proof TEXT,
-                created_at TEXT NOT NULL,
-                paid_at TEXT,
-                FOREIGN KEY (screening_id) REFERENCES screenings(id) ON DELETE CASCADE,
-                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
-            )',
-            'CREATE TABLE reservation_seats (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                reservation_id INTEGER NOT NULL,
-                seat_id INTEGER NOT NULL,
-                FOREIGN KEY (reservation_id) REFERENCES reservations(id) ON DELETE CASCADE,
-                FOREIGN KEY (seat_id) REFERENCES seats(id) ON DELETE CASCADE
-            )',
-            'CREATE TABLE reviews (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                movie_id INTEGER NOT NULL,
-                user_id INTEGER,
-                guest_email TEXT,
-                author_name TEXT,
-                rating INTEGER NOT NULL,
-                comment TEXT NOT NULL,
-                created_at TEXT NOT NULL,
-                FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE,
-                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
-            )',
-            'CREATE TABLE settings (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                open_time TEXT NOT NULL,
-                close_time TEXT NOT NULL,
-                buffer_minutes INTEGER NOT NULL
-            )',
-        ];
+        if ($this->db->driver() === 'mysql') {
+            $queries = [
+                'CREATE TABLE users (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    full_name VARCHAR(255) NOT NULL,
+                    email VARCHAR(255) NOT NULL UNIQUE,
+                    password_hash VARCHAR(255) NOT NULL,
+                    role VARCHAR(50) NOT NULL DEFAULT "user",
+                    created_at DATETIME NOT NULL
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci',
+                'CREATE TABLE movies (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    title VARCHAR(255) NOT NULL,
+                    slug VARCHAR(255) NOT NULL UNIQUE,
+                    duration_minutes INT NOT NULL,
+                    director VARCHAR(255) NULL,
+                    description TEXT NOT NULL,
+                    hero_excerpt TEXT NULL,
+                    trailer_url TEXT NULL,
+                    poster_path TEXT NOT NULL,
+                    hero_path TEXT NOT NULL,
+                    status VARCHAR(50) NOT NULL,
+                    release_date DATE NULL,
+                    created_at DATETIME NOT NULL
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci',
+                'CREATE TABLE genres (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    name VARCHAR(120) NOT NULL,
+                    slug VARCHAR(120) NOT NULL UNIQUE
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci',
+                'CREATE TABLE movie_genres (
+                    movie_id INT NOT NULL,
+                    genre_id INT NOT NULL,
+                    PRIMARY KEY (movie_id, genre_id),
+                    CONSTRAINT fk_movie_genres_movie FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE,
+                    CONSTRAINT fk_movie_genres_genre FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE CASCADE
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci',
+                'CREATE TABLE halls (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    name VARCHAR(120) NOT NULL,
+                    sort_order INT NOT NULL
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci',
+                'CREATE TABLE hall_seat_layout (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    hall_id INT NOT NULL,
+                    row_label VARCHAR(10) NOT NULL,
+                    seat_number INT NOT NULL,
+                    seat_type VARCHAR(50) NOT NULL DEFAULT "standard",
+                    CONSTRAINT fk_hall_seat_layout_hall FOREIGN KEY (hall_id) REFERENCES halls(id) ON DELETE CASCADE
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci',
+                'CREATE TABLE screenings (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    movie_id INT NOT NULL,
+                    hall_id INT NOT NULL,
+                    screening_date DATE NOT NULL,
+                    screening_time TIME NOT NULL,
+                    price DECIMAL(10,2) NOT NULL,
+                    status VARCHAR(50) NOT NULL DEFAULT "active",
+                    created_at DATETIME NOT NULL,
+                    INDEX idx_screenings_date_time (screening_date, screening_time),
+                    CONSTRAINT fk_screenings_movie FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE,
+                    CONSTRAINT fk_screenings_hall FOREIGN KEY (hall_id) REFERENCES halls(id) ON DELETE CASCADE
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci',
+                'CREATE TABLE seats (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    screening_id INT NOT NULL,
+                    row_label VARCHAR(10) NOT NULL,
+                    seat_number INT NOT NULL,
+                    seat_type VARCHAR(50) NOT NULL DEFAULT "standard",
+                    price DECIMAL(10,2) NOT NULL,
+                    status VARCHAR(50) NOT NULL DEFAULT "available",
+                    INDEX idx_seats_screening (screening_id),
+                    CONSTRAINT fk_seats_screening FOREIGN KEY (screening_id) REFERENCES screenings(id) ON DELETE CASCADE
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci',
+                'CREATE TABLE reservations (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    screening_id INT NOT NULL,
+                    user_id INT NULL,
+                    guest_email VARCHAR(255) NULL,
+                    guest_token VARCHAR(255) NULL,
+                    total_price DECIMAL(10,2) NOT NULL,
+                    status VARCHAR(50) NOT NULL,
+                    disability_proof TEXT NULL,
+                    created_at DATETIME NOT NULL,
+                    paid_at DATETIME NULL,
+                    INDEX idx_reservations_screening (screening_id),
+                    INDEX idx_reservations_user (user_id),
+                    CONSTRAINT fk_reservations_screening FOREIGN KEY (screening_id) REFERENCES screenings(id) ON DELETE CASCADE,
+                    CONSTRAINT fk_reservations_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci',
+                'CREATE TABLE reservation_seats (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    reservation_id INT NOT NULL,
+                    seat_id INT NOT NULL,
+                    INDEX idx_reservation_seats_reservation (reservation_id),
+                    INDEX idx_reservation_seats_seat (seat_id),
+                    CONSTRAINT fk_reservation_seats_reservation FOREIGN KEY (reservation_id) REFERENCES reservations(id) ON DELETE CASCADE,
+                    CONSTRAINT fk_reservation_seats_seat FOREIGN KEY (seat_id) REFERENCES seats(id) ON DELETE CASCADE
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci',
+                'CREATE TABLE reviews (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    movie_id INT NOT NULL,
+                    user_id INT NULL,
+                    guest_email VARCHAR(255) NULL,
+                    author_name VARCHAR(255) NULL,
+                    rating INT NOT NULL,
+                    comment TEXT NOT NULL,
+                    created_at DATETIME NOT NULL,
+                    INDEX idx_reviews_movie (movie_id),
+                    CONSTRAINT fk_reviews_movie FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE,
+                    CONSTRAINT fk_reviews_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci',
+                'CREATE TABLE settings (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    open_time TIME NOT NULL,
+                    close_time TIME NOT NULL,
+                    buffer_minutes INT NOT NULL
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci',
+            ];
+        } else {
+            $queries = [
+                'CREATE TABLE users (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    full_name TEXT NOT NULL,
+                    email TEXT NOT NULL UNIQUE,
+                    password_hash TEXT NOT NULL,
+                    role TEXT NOT NULL DEFAULT "user",
+                    created_at TEXT NOT NULL
+                )',
+                'CREATE TABLE movies (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    title TEXT NOT NULL,
+                    slug TEXT NOT NULL UNIQUE,
+                    duration_minutes INTEGER NOT NULL,
+                    director TEXT,
+                    description TEXT NOT NULL,
+                    hero_excerpt TEXT,
+                    trailer_url TEXT,
+                    poster_path TEXT NOT NULL,
+                    hero_path TEXT NOT NULL,
+                    status TEXT NOT NULL,
+                    release_date TEXT,
+                    created_at TEXT NOT NULL
+                )',
+                'CREATE TABLE genres (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT NOT NULL,
+                    slug TEXT NOT NULL UNIQUE
+                )',
+                'CREATE TABLE movie_genres (
+                    movie_id INTEGER NOT NULL,
+                    genre_id INTEGER NOT NULL,
+                    PRIMARY KEY (movie_id, genre_id),
+                    FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE,
+                    FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE CASCADE
+                )',
+                'CREATE TABLE halls (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT NOT NULL,
+                    sort_order INTEGER NOT NULL
+                )',
+                'CREATE TABLE hall_seat_layout (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    hall_id INTEGER NOT NULL,
+                    row_label TEXT NOT NULL,
+                    seat_number INTEGER NOT NULL,
+                    seat_type TEXT NOT NULL DEFAULT "standard",
+                    FOREIGN KEY (hall_id) REFERENCES halls(id) ON DELETE CASCADE
+                )',
+                'CREATE TABLE screenings (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    movie_id INTEGER NOT NULL,
+                    hall_id INTEGER NOT NULL,
+                    screening_date TEXT NOT NULL,
+                    screening_time TEXT NOT NULL,
+                    price REAL NOT NULL,
+                    status TEXT NOT NULL DEFAULT "active",
+                    created_at TEXT NOT NULL,
+                    FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE,
+                    FOREIGN KEY (hall_id) REFERENCES halls(id) ON DELETE CASCADE
+                )',
+                'CREATE TABLE seats (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    screening_id INTEGER NOT NULL,
+                    row_label TEXT NOT NULL,
+                    seat_number INTEGER NOT NULL,
+                    seat_type TEXT NOT NULL DEFAULT "standard",
+                    price REAL NOT NULL,
+                    status TEXT NOT NULL DEFAULT "available",
+                    FOREIGN KEY (screening_id) REFERENCES screenings(id) ON DELETE CASCADE
+                )',
+                'CREATE TABLE reservations (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    screening_id INTEGER NOT NULL,
+                    user_id INTEGER,
+                    guest_email TEXT,
+                    guest_token TEXT,
+                    total_price REAL NOT NULL,
+                    status TEXT NOT NULL,
+                    disability_proof TEXT,
+                    created_at TEXT NOT NULL,
+                    paid_at TEXT,
+                    FOREIGN KEY (screening_id) REFERENCES screenings(id) ON DELETE CASCADE,
+                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+                )',
+                'CREATE TABLE reservation_seats (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    reservation_id INTEGER NOT NULL,
+                    seat_id INTEGER NOT NULL,
+                    FOREIGN KEY (reservation_id) REFERENCES reservations(id) ON DELETE CASCADE,
+                    FOREIGN KEY (seat_id) REFERENCES seats(id) ON DELETE CASCADE
+                )',
+                'CREATE TABLE reviews (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    movie_id INTEGER NOT NULL,
+                    user_id INTEGER,
+                    guest_email TEXT,
+                    author_name TEXT,
+                    rating INTEGER NOT NULL,
+                    comment TEXT NOT NULL,
+                    created_at TEXT NOT NULL,
+                    FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE,
+                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+                )',
+                'CREATE TABLE settings (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    open_time TEXT NOT NULL,
+                    close_time TEXT NOT NULL,
+                    buffer_minutes INTEGER NOT NULL
+                )',
+            ];
+        }
 
         foreach ($queries as $query) {
             $this->db->execute($query);
