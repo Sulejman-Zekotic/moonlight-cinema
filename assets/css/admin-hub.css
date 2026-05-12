@@ -1,0 +1,85 @@
+.mc-hci-admin{
+  min-height:80vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  
+  color:white;
+}
+
+/* ADMIN KARTICA */
+.mc-admin-sidebar{
+  width:320px;
+  padding:28px 26px;
+  background:linear-gradient(180deg, #1B263B, #142235);
+  border-radius:22px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+
+  box-shadow:0 25px 80px rgba(0,0,0,.55);
+  border:1px solid rgba(255,255,255,.05);
+}
+
+.mc-admin-sidebar h2{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin-bottom:12px;
+  font-size:20px;
+  opacity:.9;
+color:white;
+}
+
+.mc-admin-icon{
+  width:20px;
+  height:20px;
+  object-fit:contain;
+  filter: brightness(0) invert(1);
+}
+
+/* TAB */
+.mc-admin-tab{
+  display:flex;
+  align-items:center;
+  gap:12px;
+
+  text-decoration:none !important;
+  color:white;
+
+  padding:14px 16px;
+  border-radius:12px;
+  background:#243447;
+  font-weight:500;
+
+  transition:.25s ease;
+}
+
+.mc-admin-tab:hover{
+  transform:translateY(-1px);
+ 
+  color:white !important;
+}
+
+.mc-admin-tab.active{
+  background:#4EA8DE;
+  color:white;
+  font-weight:700;
+}
+
+.mc-admin-tab.active .mc-admin-icon{
+  filter: brightness(0) invert(1);
+}
+
+@media (max-width: 640px) {
+  .mc-hci-admin {
+    min-height: auto;
+    padding: 32px 12px 0;
+  }
+
+  .mc-admin-sidebar {
+    width: 100%;
+    padding: 22px 18px;
+  }
+}

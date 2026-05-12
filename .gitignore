@@ -1,0 +1,8 @@
+/storage/*.sqlite
+/storage/*.sqlite-journal
+/storage/logs/*
+!/storage/logs/.gitkeep
+/storage/sessions/*
+!/storage/sessions/.gitkeep
+/storage/uploads/proofs/*
+!/storage/uploads/proofs/.gitkeep

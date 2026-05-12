@@ -1,0 +1,208 @@
+.mc-admin-add-page {
+  width: min(100% - 24px, 1160px);
+  min-height: calc(100dvh - 92px);
+  margin: 18px auto 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #f8f9fa;
+}
+
+.mc-admin-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-start;
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(78, 168, 222, 0.22);
+  background: rgba(78, 168, 222, 0.14);
+  color: #ffffff;
+  text-decoration: none !important;
+  font-size: 0.86rem;
+}
+
+.mc-admin-back:hover { background: rgba(78, 168, 222, 0.22); }
+
+.mc-admin-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.mc-admin-add-card {
+  width: min(100%, 560px);
+  padding: 16px 16px 14px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(20, 35, 55, 0.9), rgba(10, 20, 35, 0.94));
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+}
+
+.mc-admin-add-card h1 {
+  margin: 0 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ffffff;
+  font-size: clamp(1.25rem, 2.4vw, 1.65rem);
+}
+
+.mc-admin-add-card__icon {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.mc-admin-form__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.mc-admin-form__field,
+.mc-admin-form__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mc-admin-form label {
+  font-size: 0.75rem;
+  color: #d3dce4;
+}
+
+.mc-admin-form input,
+.mc-admin-form select {
+  width: 100%;
+  min-height: 38px;
+  padding: 0 13px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 13px;
+  color: #f8f9fa;
+  font-size: 0.84rem;
+  color-scheme: dark;
+}
+
+.mc-admin-form input:focus,
+.mc-admin-form select:focus {
+  outline: none;
+  border-color: #4ea8de;
+  box-shadow: 0 0 0 2px rgba(78, 168, 222, 0.18);
+}
+
+.mc-admin-form select option {
+  background: #0d1b2a;
+  color: #f8f9fa;
+}
+
+.mc-admin-form button {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 13px;
+  font-size: 0.86rem;
+  font-weight: 800;
+  background: #4ea8de;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.mc-admin-msg {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.mc-error {
+  background: rgba(231, 76, 60, 0.15);
+  color: #ffb3b3;
+  border: 1px solid rgba(231, 76, 60, 0.35);
+}
+
+.mc-success {
+  background: rgba(46, 204, 113, 0.15);
+  color: #9dffcb;
+  border: 1px solid rgba(46, 204, 113, 0.35);
+}
+
+.mc-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  z-index: 99999;
+  max-width: min(420px, calc(100% - 28px));
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: rgba(46, 204, 113, 0.15);
+  color: #9dffcb;
+  border: 1px solid rgba(46, 204, 113, 0.35);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.42);
+  font-weight: 700;
+  text-align: center;
+}
+
+@media (min-width: 761px) {
+  .mc-admin-add-page {
+    width: min(1240px, calc(100% - 32px));
+    margin-top: 24px;
+    align-items: flex-start;
+  }
+
+  .mc-admin-back { margin-bottom: 20px; }
+
+  .mc-admin-add-card {
+    width: min(540px, 100%);
+    align-self: center;
+  }
+}
+
+@media (min-height: 760px) and (min-width: 761px) {
+  .mc-admin-add-page { margin-top: 30px; }
+  .mc-admin-add-card { padding: 18px; }
+  .mc-admin-form__grid { gap: 12px; }
+  .mc-admin-form input,
+  .mc-admin-form select { min-height: 40px; }
+}
+
+@media (max-width: 640px) {
+  .mc-admin-add-page {
+    width: min(100% - 18px, 1160px);
+    margin-top: 16px;
+    min-height: auto;
+  }
+
+  .mc-admin-back {
+    align-self: center;
+    margin-bottom: 12px;
+  }
+
+  .mc-admin-add-card {
+    width: 100%;
+    padding: 14px 12px 12px;
+    border-radius: 20px;
+  }
+
+  .mc-admin-add-card h1 {
+    margin-bottom: 12px;
+    font-size: 1.18rem;
+  }
+
+  .mc-admin-form__grid { gap: 10px; }
+
+  .mc-admin-form input,
+  .mc-admin-form select,
+  .mc-admin-form button {
+    min-height: 38px;
+    font-size: 0.82rem;
+  }
+}

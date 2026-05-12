@@ -1,0 +1,369 @@
+.mc-admin-auto-page {
+  width: min(1280px, calc(100% - 92px));
+  margin: 42px auto 0;
+  color: #f8f9fa;
+}
+
+.mc-admin-back,
+.mc-admin-auto-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(78, 168, 222, 0.22);
+  background: rgba(78, 168, 222, 0.14);
+  color: #ffffff !important;
+  text-decoration: none !important;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.mc-admin-back:hover,
+.mc-admin-auto-back:hover {
+  background: rgba(78, 168, 222, 0.22);
+}
+
+.mc-admin-icon,
+.mc-admin-auto-back img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.mc-admin-auto-intro {
+  margin-bottom: 26px;
+}
+
+.mc-admin-auto-intro::after,
+.mc-admin-auto-intro p {
+  display: none !important;
+  content: none !important;
+}
+
+.mc-admin-auto-intro h1 {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  text-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
+}
+
+.mc-movie-select {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.mc-movie-checkbox {
+  min-height: 118px;
+  position: relative;
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(13, 34, 55, 0.98), rgba(8, 25, 42, 0.98));
+  border: 1px solid rgba(132, 171, 205, 0.24);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 16px 42px rgba(0, 0, 0, 0.1);
+  color: #e0e1dd;
+  cursor: pointer;
+  transition: border-color 0.18s ease, transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.mc-movie-checkbox:hover {
+  transform: translateY(-1px);
+  border-color: rgba(78, 168, 222, 0.46);
+}
+
+.mc-movie-checkbox.is-selected,
+.mc-movie-checkbox:has(input:checked) {
+  background: linear-gradient(145deg, rgba(20, 58, 88, 0.98), rgba(10, 32, 54, 0.98));
+  border-color: rgba(78, 168, 222, 0.72);
+  box-shadow: inset 0 0 0 1px rgba(78, 168, 222, 0.18), 0 18px 48px rgba(0, 0, 0, 0.16);
+}
+
+.mc-movie-checkbox:not(.is-selected):not(:has(input:checked)) {
+  opacity: 0.58;
+  filter: saturate(0.75);
+}
+
+.mc-movie-check-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mc-auto-poster-wrap {
+  width: 82px;
+  height: 94px;
+  overflow: hidden;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.26);
+}
+
+.mc-auto-poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mc-movie-checkbox__content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 10px;
+}
+
+.mc-movie-checkbox strong {
+  color: #ffffff;
+  font-size: 0.98rem;
+  line-height: 1.22;
+  font-weight: 800;
+}
+
+.mc-movie-genres {
+  width: 100%;
+  display: flex !important;
+  justify-content: flex-start !important;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  text-align: left;
+}
+
+.mc-movie-genres .tag {
+  width: auto !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 24px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 4px 9px !important;
+  border-radius: 999px !important;
+  border: 0 !important;
+  font-size: 0.68rem !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
+}
+
+.mc-movie-genres .tag-akcija { background: #ff5a5f !important; color: #ffffff !important; }
+.mc-movie-genres .tag-triler { background: #4f7094 !important; color: #ffffff !important; }
+.mc-movie-genres .tag-drama { background: #b50b0b !important; color: #ffffff !important; }
+.mc-movie-genres .tag-komedija { background: #f8c537 !important; color: #081624 !important; }
+.mc-movie-genres .tag-romantika { background: #e7a1ad !important; color: #081624 !important; }
+.mc-movie-genres .tag-krimi { background: #1592d3 !important; color: #ffffff !important; }
+.mc-movie-genres .tag-horor { background: #7a0000 !important; color: #ffffff !important; }
+.mc-movie-genres .tag-dokumentarni { background: #a9dd82 !important; color: #081624 !important; }
+.mc-movie-genres .tag-animirani { background: #cdb4db !important; color: #081624 !important; }
+
+.mc-duration {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #d5e1eb;
+  font-size: 0.78rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.mc-duration::before {
+  content: "◷";
+  color: #d5e1eb;
+  font-size: 0.88rem;
+}
+
+.mc-card-action-icon {
+  display: none !important;
+}
+
+.mc-auto-box {
+  margin: 0 0 34px;
+  padding: 22px 26px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(13, 34, 55, 0.98), rgba(8, 25, 42, 0.98));
+  border: 1px solid rgba(132, 171, 205, 0.24);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 20px 60px rgba(0, 0, 0, 0.12);
+}
+
+.mc-auto-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 300px;
+  gap: 28px;
+  align-items: end;
+}
+
+.mc-auto-field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mc-auto-field label {
+  color: #ffffff;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.mc-auto-field input {
+  width: 100%;
+  min-height: 50px;
+  padding: 0 18px;
+  border-radius: 8px;
+  border: 1px solid rgba(132, 171, 205, 0.24);
+  background: rgba(7, 20, 35, 0.78);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  color-scheme: dark;
+  outline: none;
+}
+
+.mc-auto-field input:focus {
+  border-color: rgba(78, 168, 222, 0.7);
+}
+
+.mc-auto-actions {
+  display: flex;
+  align-items: flex-end;
+}
+
+.mc-auto-generate {
+  width: 100%;
+  min-height: 50px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 8px;
+  background: #4ea8de;
+  color: #ffffff;
+  font-size: 0.98rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: none !important;
+  filter: none !important;
+  text-shadow: none !important;
+}
+
+.mc-auto-generate img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.mc-auto-generate:hover {
+  background: #4ea8de;
+  filter: none !important;
+}
+
+.mc-auto-generate.is-loading {
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.mc-auto-result {
+  min-height: 18px;
+  margin-top: 10px;
+  color: #dbe8f1;
+  font-size: 0.86rem;
+}
+
+.mc-auto-result.is-error { color: #ffb3b3; }
+
+.spinner {
+  width: 17px;
+  height: 17px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: mc-spin 0.8s linear infinite;
+}
+
+@keyframes mc-spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 1180px) {
+  .mc-admin-auto-page { width: min(100% - 48px, 900px); }
+  .mc-movie-select { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 980px) {
+  .mc-admin-auto-page {
+    width: min(100% - 28px, 760px);
+    margin-top: 26px;
+  }
+  .mc-movie-select,
+  .mc-auto-grid { grid-template-columns: 1fr; }
+  .mc-auto-grid { gap: 16px; }
+}
+
+@media (max-width: 640px) {
+  .mc-admin-auto-page {
+    width: min(100% - 18px, 1160px);
+    margin-top: 24px;
+  }
+
+  .mc-admin-auto-back {
+    width: fit-content;
+    margin: 0 auto 16px;
+  }
+
+  .mc-admin-auto-intro {
+    margin-bottom: 18px;
+    text-align: center;
+  }
+
+  .mc-admin-auto-intro h1 { font-size: 1.45rem; }
+
+  .mc-movie-select {
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+
+  .mc-movie-checkbox {
+    min-height: 108px;
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .mc-auto-poster-wrap {
+    width: 76px;
+    height: 84px;
+  }
+
+  .mc-movie-checkbox__content { gap: 8px; }
+  .mc-movie-checkbox strong { font-size: 0.93rem; }
+  .mc-movie-genres { gap: 6px; }
+  .mc-movie-genres .tag {
+    min-height: 23px !important;
+    padding: 4px 8px !important;
+    font-size: 0.66rem !important;
+  }
+
+  .mc-duration { font-size: 0.78rem; }
+  .mc-auto-box { padding: 16px 14px; }
+  .mc-auto-field input,
+  .mc-auto-generate {
+    min-height: 46px;
+    font-size: 0.9rem;
+  }
+}
