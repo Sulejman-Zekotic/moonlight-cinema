@@ -61,7 +61,12 @@ final class Mailer
                 default => $this->sendAutomatically($to, $subject, $html),
             };
         } catch (Throwable $throwable) {
+            error_log('MAIL ERROR DELIVER: ' . $throwable->getMessage());
             $result['error'] = $throwable->getMessage();
+        }
+
+        if (!$result['sent']) {
+            error_log('MAIL ERROR RESULT: driver=' . ($result['driver'] ?? 'unknown') . ' error=' . ($result['error'] ?? 'unknown'));
         }
 
         if (!$result['sent'] && $this->shouldUseLogFallback($result)) {
@@ -134,6 +139,7 @@ final class Mailer
         }
 
         $remoteHost = $encryption === 'ssl' ? 'ssl://' . $host : $host;
+
         $context = stream_context_create([
             'ssl' => [
                 'verify_peer' => false,
@@ -167,9 +173,11 @@ final class Mailer
 
             if ($encryption === 'tls') {
                 $this->smtpCommand($socket, 'STARTTLS', [220]);
+
                 if (!stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
                     throw new RuntimeException('Neuspješan STARTTLS handshake.');
                 }
+
                 $this->smtpCommand($socket, 'EHLO localhost', [250]);
             }
 
@@ -200,6 +208,7 @@ final class Mailer
 
             $body = implode("\r\n", $headers) . "\r\n\r\n" . $html . "\r\n.";
             fwrite($socket, $body . "\r\n");
+
             $this->expectSmtpCode($socket, [250]);
             $this->smtpCommand($socket, 'QUIT', [221]);
 
@@ -209,6 +218,8 @@ final class Mailer
                 'error' => null,
             ];
         } catch (Throwable $throwable) {
+            error_log('MAIL ERROR SMTP: ' . $throwable->getMessage());
+
             return [
                 'sent' => false,
                 'driver' => 'smtp',
@@ -232,12 +243,14 @@ final class Mailer
 
         while (($line = fgets($socket, 515)) !== false) {
             $response .= $line;
+
             if (preg_match('/^\d{3}\s/', $line) === 1) {
                 break;
             }
         }
 
         $code = (int) substr($response, 0, 3);
+
         if (!in_array($code, $expectedCodes, true)) {
             throw new RuntimeException(trim($response) !== '' ? trim($response) : 'Neočekivan SMTP odgovor.');
         }
@@ -269,6 +282,7 @@ final class Mailer
         }
 
         $smtpHost = trim((string) ($this->config['smtp']['host'] ?? ''));
+
         if ($smtpHost !== '') {
             return false;
         }
@@ -281,6 +295,13 @@ final class Mailer
 
     private function logAttempt(string $to, string $subject, array $context, array $result): void
     {
+        $logPath = (string) ($this->config['log_path'] ?? '');
+        $logDir = dirname($logPath);
+
+        if ($logPath !== '' && !is_dir($logDir)) {
+            mkdir($logDir, 0777, true);
+        }
+
         $logEntry = [
             'sent_at' => date('Y-m-d H:i:s'),
             'sent' => (bool) ($result['sent'] ?? false),
@@ -292,11 +313,13 @@ final class Mailer
             'payload' => $context['payload'] ?? [],
         ];
 
-        file_put_contents(
-            $this->config['log_path'],
-            json_encode($logEntry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . PHP_EOL,
-            FILE_APPEND
-        );
+        if ($logPath !== '') {
+            file_put_contents(
+                $logPath,
+                json_encode($logEntry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . PHP_EOL,
+                FILE_APPEND
+            );
+        }
     }
 
     private function ticketHtml(array $ticket): string
