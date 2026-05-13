@@ -23,7 +23,16 @@ if (session_status() === PHP_SESSION_NONE) {
         $_SERVER['HTTPS'] = 'on';
     }
 
-$sessionPath = '/home/site/moonlight-sessions';
+$sessionPath = '/tmp/moonlight-sessions';
+
+if (!is_dir($sessionPath)) {
+    mkdir($sessionPath, 0777, true);
+}
+
+chmod($sessionPath, 0777);
+session_save_path($sessionPath);
+
+session_start();$sessionPath = '/home/site/moonlight-sessions';
     if (!is_dir($sessionPath)) {
         mkdir($sessionPath, 0777, true);
     }
