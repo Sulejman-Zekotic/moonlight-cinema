@@ -12,7 +12,17 @@ final class Auth
     {
         $userId = $_SESSION['user_id'] ?? null;
 
-        return $userId ? (int) $userId : null;
+        if ($userId) {
+            return (int) $userId;
+        }
+
+        $cookieUserId = $this->userIdFromAuthCookie();
+        if ($cookieUserId !== null) {
+            $_SESSION['user_id'] = $cookieUserId;
+            return $cookieUserId;
+        }
+
+        return null;
     }
 
     public function user(): ?array
@@ -53,8 +63,9 @@ final class Auth
         $_SESSION['user_role'] = (string) $user['role'];
         $_SESSION['user_name'] = (string) $user['full_name'];
 
+        $this->rememberAuthCookie((int) $user['id']);
         session_write_close();
-           $_SESSION['debug_login_test'] = 'LOGIN_SESSION_RADI';
+
         return [
             'success' => true,
             'message' => 'Prijava uspješna.',
@@ -230,6 +241,7 @@ final class Auth
     public function logout(): void
     {
         $_SESSION = [];
+        $this->clearAuthCookie();
 
         if (ini_get('session.use_cookies')) {
             $params = session_get_cookie_params();
@@ -246,6 +258,68 @@ final class Auth
 
         session_unset();
         session_destroy();
+    }
+
+    private function rememberAuthCookie(int $userId): void
+    {
+        $value = $userId . '|' . $this->authCookieSignature($userId);
+
+        setcookie('moonlight_auth', $value, [
+            'expires' => time() + 60 * 60 * 24 * 14,
+            'path' => '/',
+            'secure' => $this->isHttpsRequest(),
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]);
+    }
+
+    private function clearAuthCookie(): void
+    {
+        setcookie('moonlight_auth', '', [
+            'expires' => time() - 3600,
+            'path' => '/',
+            'secure' => $this->isHttpsRequest(),
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]);
+    }
+
+    private function userIdFromAuthCookie(): ?int
+    {
+        $cookie = (string) ($_COOKIE['moonlight_auth'] ?? '');
+        if ($cookie === '' || !str_contains($cookie, '|')) {
+            return null;
+        }
+
+        [$rawUserId, $signature] = explode('|', $cookie, 2);
+        $userId = (int) $rawUserId;
+
+        if ($userId <= 0) {
+            return null;
+        }
+
+        if (!hash_equals($this->authCookieSignature($userId), $signature)) {
+            $this->clearAuthCookie();
+            return null;
+        }
+
+        return $userId;
+    }
+
+    private function authCookieSignature(int $userId): string
+    {
+        $secret = getenv('MC_APP_KEY') ?: 'moonlight-cinema-local-secret-change-later';
+        return hash_hmac('sha256', (string) $userId, $secret);
+    }
+
+    private function isHttpsRequest(): bool
+    {
+        $forwardedProto = strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''));
+
+        return str_contains($forwardedProto, 'https')
+            || !empty($_SERVER['HTTP_X_ARR_SSL'])
+            || (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || ((string) ($_SERVER['SERVER_PORT'] ?? '') === '443');
     }
 
     private function validResetRecord(string $token): ?array

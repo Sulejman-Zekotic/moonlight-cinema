@@ -208,7 +208,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const response = await fetch(mcAuth.ajaxurl, {
         method: 'POST',
         credentials: 'same-origin',
-        credentials: 'same-origin',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
           action: 'mc_app_register',

@@ -44,7 +44,4 @@ $page = match ($path) {
 };
 
 $pageData = require __DIR__ . '/app/routes/pages.php';
-echo '<pre>';
-var_dump($_SESSION);
-echo '</pre>';
 render_view($pageData['view'], $pageData['data'], $pageData['layout'] ?? 'main');
