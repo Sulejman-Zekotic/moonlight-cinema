@@ -23,9 +23,9 @@ if (session_status() === PHP_SESSION_NONE) {
         $_SERVER['HTTPS'] = 'on';
     }
 
-    $sessionPath = is_dir('/home/site')
-        ? '/home/site/moonlight-sessions'
-        : __DIR__ . '/../storage/sessions';
+   $sessionPath = getenv('HOME')
+    ? rtrim((string) getenv('HOME'), '/') . '/moonlight-sessions'
+    : __DIR__ . '/../storage/sessions';
 
     if (!is_dir($sessionPath)) {
         mkdir($sessionPath, 0777, true);
