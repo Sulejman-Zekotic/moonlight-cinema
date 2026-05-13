@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       setSuccess(loginError, 'Prijava uspješna.');
       setTimeout(() => {
-        window.location.href = `${window.MC_BASE_URL}/`;
+        window.location.href = '/';
       }, 650);
     } catch {
       setError(loginError, 'Greška mreže. Pokušajte ponovo.');
@@ -303,7 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       setSuccess(resetError, response.data?.message || 'Lozinka je promijenjena.');
       setTimeout(() => {
-        window.location.href = `${window.MC_BASE_URL}/prijava`;
+        window.location.href = '/prijava';
       }, 1100);
     } catch {
       setError(resetError, 'Greška mreže. Pokušajte ponovo.');
