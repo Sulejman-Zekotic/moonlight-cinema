@@ -48,7 +48,10 @@ final class Auth
             return ['success' => false, 'message' => 'Pogrešan email ili lozinka.'];
         }
 
+        session_regenerate_id(true);
         $_SESSION['user_id'] = (int) $user['id'];
+        $_SESSION['user_role'] = (string) $user['role'];
+        $_SESSION['user_name'] = (string) $user['full_name'];
 
         return [
             'success' => true,

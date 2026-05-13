@@ -756,16 +756,25 @@ img {
   }
 
   .mc-site-header__inner {
-    padding: 14px 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 12px 12px;
+    gap: 10px;
   }
 
   .mc-site-brand {
+    margin-right: auto;
     font-size: 0.82rem;
     gap: 10px;
   }
 
   .mc-nav-toggle {
     display: inline-block;
+    margin-left: auto;
+    flex: 0 0 46px;
+    width: 46px;
+    height: 46px;
   }
 
   .mc-site-nav-shell {
