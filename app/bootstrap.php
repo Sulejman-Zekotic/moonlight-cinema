@@ -12,14 +12,21 @@ require_once __DIR__ . '/CinemaRepository.php';
 $config = require __DIR__ . '/config.php';
 
 if (session_status() === PHP_SESSION_NONE) {
+    $forwardedProto = strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''));
+
     if (
-        (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
-        || (isset($_SERVER['HTTP_X_ARR_SSL']) && $_SERVER['HTTP_X_ARR_SSL'] !== '')
+        str_contains($forwardedProto, 'https')
+        || (!empty($_SERVER['HTTP_X_ARR_SSL']))
+        || ((!empty($_SERVER['HTTPS'])) && $_SERVER['HTTPS'] !== 'off')
+        || ((string) ($_SERVER['SERVER_PORT'] ?? '') === '443')
     ) {
         $_SERVER['HTTPS'] = 'on';
     }
 
-    $sessionPath = __DIR__ . '/../storage/sessions';
+    $sessionPath = is_dir('/home/site')
+        ? '/home/site/moonlight-sessions'
+        : __DIR__ . '/../storage/sessions';
+
     if (!is_dir($sessionPath)) {
         mkdir($sessionPath, 0777, true);
     }
@@ -34,6 +41,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_name('moonlight_session');
     ini_set('session.use_strict_mode', '1');
     ini_set('session.use_only_cookies', '1');
+    ini_set('session.cookie_lifetime', '0');
+    ini_set('session.cookie_path', '/');
+    ini_set('session.cookie_httponly', '1');
+    ini_set('session.cookie_samesite', 'Lax');
+    ini_set('session.cookie_secure', $isHttps ? '1' : '0');
 
     session_set_cookie_params([
         'lifetime' => 0,

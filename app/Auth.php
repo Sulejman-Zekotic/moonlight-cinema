@@ -53,6 +53,8 @@ final class Auth
         $_SESSION['user_role'] = (string) $user['role'];
         $_SESSION['user_name'] = (string) $user['full_name'];
 
+        session_write_close();
+
         return [
             'success' => true,
             'message' => 'Prijava uspješna.',

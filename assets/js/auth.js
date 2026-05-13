@@ -167,6 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const response = await fetch(mcAuth.ajaxurl, {
         method: 'POST',
+        credentials: 'same-origin',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
           action: 'mc_app_login',
@@ -206,6 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const response = await fetch(mcAuth.ajaxurl, {
         method: 'POST',
+        credentials: 'same-origin',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
           action: 'mc_app_register',
@@ -243,6 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const response = await fetch(mcAuth.ajaxurl, {
         method: 'POST',
+        credentials: 'same-origin',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
           action: 'mc_request_password_reset',
@@ -282,6 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const response = await fetch(mcAuth.ajaxurl, {
         method: 'POST',
+        credentials: 'same-origin',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
           action: 'mc_reset_password',
