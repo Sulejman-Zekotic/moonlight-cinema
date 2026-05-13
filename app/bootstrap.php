@@ -23,16 +23,8 @@ if (session_status() === PHP_SESSION_NONE) {
         $_SERVER['HTTPS'] = 'on';
     }
 
-$sessionPath = '/tmp/moonlight-sessions';
+    $sessionPath = '/tmp/moonlight-sessions';
 
-if (!is_dir($sessionPath)) {
-    mkdir($sessionPath, 0777, true);
-}
-
-chmod($sessionPath, 0777);
-session_save_path($sessionPath);
-
-session_start();$sessionPath = '/home/site/moonlight-sessions';
     if (!is_dir($sessionPath)) {
         mkdir($sessionPath, 0777, true);
     }
@@ -45,6 +37,7 @@ session_start();$sessionPath = '/home/site/moonlight-sessions';
 
     session_save_path($sessionPath);
     session_name('moonlight_session');
+
     ini_set('session.use_strict_mode', '1');
     ini_set('session.use_only_cookies', '1');
     ini_set('session.cookie_lifetime', '0');
