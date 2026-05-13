@@ -54,7 +54,7 @@ final class Auth
         $_SESSION['user_name'] = (string) $user['full_name'];
 
         session_write_close();
-
+           $_SESSION['debug_login_test'] = 'LOGIN_SESSION_RADI';
         return [
             'success' => true,
             'message' => 'Prijava uspješna.',
