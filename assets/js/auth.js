@@ -165,16 +165,16 @@ document.addEventListener('DOMContentLoaded', () => {
     setSuccess(loginError, 'Prijava u toku...');
 
     try {
-      const response = await fetch(mcAuth.ajaxurl, {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          action: 'mc_app_login',
-          email: loginEmail.value.trim(),
-          password: loginPassword.value,
-        }),
-      }).then((res) => res.json());
+    const response = await fetch(mcAuth.ajaxurl, {
+  method: 'POST',
+  credentials: 'same-origin',
+  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  body: new URLSearchParams({
+    action: 'mc_app_login',
+    email: loginEmail.value.trim(),
+    password: loginPassword.value,
+  }),
+}).then((res) => res.json());
 
       if (!response.success) {
         setError(loginError, response.data || 'Greška pri prijavi.');
