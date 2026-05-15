@@ -84,7 +84,54 @@ final class Mailer
 
         return $result;
     }
+        private function passwordResetHtml(array $payload): string
+    {
+        return '
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+  <meta charset="UTF-8">
+  <title>Reset lozinke</title>
+</head>
+<body style="margin:0;padding:24px;background:#071628;font-family:Segoe UI,Arial,sans-serif;color:#f8f9fa;">
+  <div style="max-width:640px;margin:0 auto;background:#13263b;border-radius:20px;padding:32px;border:1px solid rgba(255,255,255,0.08);">
 
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-size:26px;font-weight:800;letter-spacing:0.04em;">
+        MOONLIGHT CINEMA
+      </div>
+
+      <div style="margin-top:8px;color:#c4cfd4;font-size:14px;">
+        Zahtjev za reset lozinke
+      </div>
+    </div>
+
+    <p style="margin:0 0 16px;color:#d7e4ef;line-height:1.7;">
+      Zdravo ' . e((string) ($payload['name'] ?? '')) . ',
+      kliknite na dugme ispod kako biste postavili novu lozinku za svoj nalog.
+    </p>
+
+    <div style="text-align:center;margin:22px 0;">
+      <a href="' . e((string) ($payload['reset_url'] ?? '')) . '"
+         style="display:inline-block;width:232px;height:44px;line-height:44px;border-radius:16px;background:#4ea8de;color:#071628;text-decoration:none;font-weight:700;text-align:center;font-size:15px;">
+         Postavi novu lozinku
+      </a>
+    </div>
+
+    <p style="margin:0 0 12px;color:#c4cfd4;line-height:1.6;">
+      Link vrijedi do
+      <strong style="color:#ffffff;">' . e(format_date_local((string) ($payload['expires_at'] ?? ''), 'd.m.Y H:i')) . '</strong>.
+      Ako niste tražili reset lozinke, slobodno zanemarite ovu poruku.
+    </p>
+
+    <p style="margin:0;color:#9fb3c8;font-size:13px;text-align:center;">
+      Moonlight Cinema, Mostar
+    </p>
+
+  </div>
+</body>
+</html>';
+    }
     private function sendAutomatically(string $to, string $subject, string $html): array
     {
         $smtpHost = trim((string) ($this->config['smtp']['host'] ?? ''));
