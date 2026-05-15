@@ -23,6 +23,7 @@ final class Mailer
                     'hall' => $ticket['hall'],
                     'seats' => $ticket['seats'] ?? [],
                     'cancel_url' => $ticket['cancel_url'],
+                    'status' => $ticket['status'] ?? 'Rezervisana',
                 ],
             ]
         );
@@ -325,6 +326,7 @@ final class Mailer
     private function ticketHtml(array $ticket): string
     {
         $seatList = implode(', ', $ticket['seats'] ?? []);
+        $status = (string) ($ticket['status'] ?? 'Rezervisana');
 
         return '
 <!DOCTYPE html>
@@ -344,13 +346,14 @@ final class Mailer
       <div style="margin-bottom:10px;color:#d7e4ef;">Datum: <strong style="color:#ffffff;">' . e($ticket['date']) . '</strong></div>
       <div style="margin-bottom:10px;color:#d7e4ef;">Vrijeme: <strong style="color:#ffffff;">' . e($ticket['time']) . '</strong></div>
       <div style="margin-bottom:10px;color:#d7e4ef;">Sala: <strong style="color:#ffffff;">' . e($ticket['hall']) . '</strong></div>
-      <div style="color:#d7e4ef;">Sjedišta: <strong style="color:#ffffff;">' . e($seatList) . '</strong></div>
+      <div style="margin-bottom:10px;color:#d7e4ef;">Sjedišta: <strong style="color:#ffffff;">' . e($seatList) . '</strong></div>
+      <div style="color:#d7e4ef;">Status: <strong style="color:#ffffff;">' . e($status) . '</strong></div>
     </div>
     <p style="margin:0 0 18px;color:#c4cfd4;line-height:1.6;">
       Ako trebate otkazati rezervaciju, koristite dugme ispod. Link vrijedi samo za ovu rezervaciju.
     </p>
     <div style="text-align:center;margin-bottom:22px;">
-      <a href="' . e($ticket['cancel_url']) . '" style="display:inline-block;padding:14px 24px;border-radius:14px;background:#4ea8de;color:#071628;text-decoration:none;font-weight:700;">Otkaži rezervaciju</a>
+      <a href="' . e($ticket['cancel_url']) . '" style="display:inline-block;width:232px;height:44px;line-height:44px;border-radius:16px;background:#4ea8de;color:#071628;text-decoration:none;font-weight:700;text-align:center;font-size:15px;">Otkaži rezervaciju</a>
     </div>
     <p style="margin:0;color:#9fb3c8;font-size:13px;text-align:center;">Moonlight Cinema, Mostar</p>
   </div>
