@@ -102,6 +102,14 @@ try {
             );
             json_success($result);
 
+        case 'mc_pay_guest_reservation':
+            $result = $repo->payGuestReservation(
+                (int) request_value('reservation_id', 0),
+                (string) request_value('token', ''),
+                $_FILES['disability_proof'] ?? null
+            );
+            json_success($result);
+
         case 'mc_cancel_reservation':
             if (!$auth->check()) {
                 json_error('Niste prijavljeni.', 401);

@@ -5,6 +5,7 @@ declare(strict_types=1);
 $repo = $app['repo'];
 $reservationId = (int) ($_GET['rid'] ?? 0);
 $token = (string) ($_GET['token'] ?? '');
+$openPayment = isset($_GET['pay']) && $_GET['pay'] === '1';
 $message = null;
 $error = null;
 
@@ -24,7 +25,10 @@ render_view('pages/cancel-reservation', [
     'reservation' => $reservation,
     'message' => $message,
     'error' => $error,
-    'styles' => ['css/site.css', 'css/tickets.css', 'css/admin-add-screening.css'],
+    'openPayment' => $openPayment,
+    'token' => $token,
+    'styles' => ['css/site.css', 'css/reservation.css', 'css/tickets.css', 'css/admin-add-screening.css'],
+    'scripts' => ['js/tickets.js'],
     'auth' => $app['auth'],
     'repo' => $repo,
     'user' => $app['auth']->user(),

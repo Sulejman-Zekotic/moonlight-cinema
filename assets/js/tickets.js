@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let cancelWasPaid = false;
   let payReservationId = null;
   let payNeedsProof = false;
+  let payIsGuest = false;
+  const guestPayment = window.mcGuestPayment || null;
 
   const checkoutModal = document.getElementById('mc-reservation-modal');
   const reviewStep = document.getElementById('mc-step-review');
@@ -139,13 +141,14 @@ document.addEventListener('DOMContentLoaded', () => {
     return valid;
   }
 
-  function openCheckoutFromTicket(reservationId, needsProof) {
+  function openCheckoutFromTicket(reservationId, needsProof, isGuest = false) {
     if (!checkoutModal || !reviewStep || !paymentStep) {
       return;
     }
 
     payReservationId = reservationId;
     payNeedsProof = needsProof;
+    payIsGuest = isGuest;
 
     checkoutModal.classList.remove('is-hidden');
     reviewStep.classList.add('is-hidden');
@@ -170,6 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.remove('modal-open');
     payReservationId = null;
     payNeedsProof = false;
+    payIsGuest = false;
     clearErrors();
 
     if (reviewStep && paymentStep) {
@@ -228,6 +232,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function closeCancelModal() {
+    if (!cancelModal) {
+      return;
+    }
+
     cancelModal.style.display = 'none';
     document.body.classList.remove('modal-open');
     cancelReservationId = null;
@@ -244,6 +252,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const payNowBtn = event.target.closest('.mc-pay-now');
     if (payNowBtn) {
       openCheckoutFromTicket(payNowBtn.dataset.reservation, payNowBtn.dataset.wheelchair === '1');
+      return;
+    }
+
+    const guestPayBtn = event.target.closest('#mc-cancel-pay');
+    if (guestPayBtn && guestPayment) {
+      event.preventDefault();
+      openCheckoutFromTicket(guestPayment.reservationId, Boolean(guestPayment.needsProof), true);
       return;
     }
 
@@ -313,6 +328,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  if (guestPayment?.open) {
+    openCheckoutFromTicket(guestPayment.reservationId, Boolean(guestPayment.needsProof), true);
+  }
+
   paySubmitBtn?.addEventListener('click', async () => {
     if (!payReservationId) {
       return;
@@ -332,8 +351,12 @@ document.addEventListener('DOMContentLoaded', () => {
     paySubmitBtn.textContent = 'Obrada...';
 
     const formData = new FormData();
-    formData.append('action', 'mc_pay_existing_reservation');
+    formData.append('action', payIsGuest ? 'mc_pay_guest_reservation' : 'mc_pay_existing_reservation');
     formData.append('reservation_id', payReservationId);
+
+    if (payIsGuest && guestPayment?.token) {
+      formData.append('token', guestPayment.token);
+    }
 
     if (payNeedsProof && proofInput?.files[0]) {
       formData.append('disability_proof', proofInput.files[0]);

@@ -434,6 +434,65 @@ final class CinemaRepository
         }
     }
 
+    public function payGuestReservation(int $reservationId, string $token, ?array $proofFile): array
+    {
+        $reservation = $this->db->fetch(
+            'SELECT * FROM reservations WHERE id = :id AND guest_token = :token AND status = "pending" LIMIT 1',
+            ['id' => $reservationId, 'token' => $token]
+        );
+
+        if (!$reservation) {
+            throw new RuntimeException('Rezervacija ne postoji, link nije validan ili je već plaćena.');
+        }
+
+        $hasWheelchair = (int) $this->db->fetchColumn(
+            'SELECT COUNT(*)
+             FROM reservation_seats rs
+             JOIN seats s ON s.id = rs.seat_id
+             WHERE rs.reservation_id = :reservation_id AND s.seat_type = "wheelchair"',
+            ['reservation_id' => $reservationId]
+        ) > 0;
+
+        if ($hasWheelchair && !$proofFile) {
+            throw new RuntimeException('Morate uploadovati dokaz o invaliditetu.');
+        }
+
+        $proofPath = $proofFile ? $this->storeProofFile($proofFile) : null;
+
+        $this->db->begin();
+
+        try {
+            $params = [
+                'id' => $reservationId,
+                'paid_at' => $this->now(),
+            ];
+
+            $sql = 'UPDATE reservations SET status = "paid", paid_at = :paid_at';
+            if ($proofPath) {
+                $sql .= ', disability_proof = :proof';
+                $params['proof'] = $proofPath;
+            }
+            $sql .= ' WHERE id = :id';
+
+            $this->db->execute($sql, $params);
+            $this->db->execute(
+                'UPDATE seats
+                 SET status = "occupied"
+                 WHERE id IN (
+                     SELECT seat_id FROM reservation_seats WHERE reservation_id = :reservation_id
+                 )',
+                ['reservation_id' => $reservationId]
+            );
+
+            $this->db->commit();
+
+            return ['guest' => true];
+        } catch (Throwable $throwable) {
+            $this->db->rollBack();
+            throw $throwable;
+        }
+    }
+
     public function userReservations(int $userId): array
     {
         $rows = $this->db->fetchAll(
@@ -479,7 +538,13 @@ final class CinemaRepository
     public function reservationForCancelPage(int $reservationId, string $token): ?array
     {
         return $this->db->fetch(
-            'SELECT r.*, m.title, h.name AS hall_name, s.screening_date, s.screening_time
+            'SELECT r.*, m.title, h.name AS hall_name, s.screening_date, s.screening_time,
+                    EXISTS (
+                        SELECT 1
+                        FROM reservation_seats rs
+                        JOIN seats seats_check ON seats_check.id = rs.seat_id
+                        WHERE rs.reservation_id = r.id AND seats_check.seat_type = "wheelchair"
+                    ) AS has_wheelchair
              FROM reservations r
              JOIN screenings s ON s.id = r.screening_id
              JOIN movies m ON m.id = s.movie_id
@@ -974,6 +1039,10 @@ final class CinemaRepository
             return null;
         }
 
+        $isPaid = $reservation['status'] === 'paid';
+        $ticketCode = 'MC-' . str_pad((string) $reservation['id'], 6, '0', STR_PAD_LEFT);
+        $startsAt = trim((string) $reservation['screening_date'] . ' ' . (string) $reservation['screening_time']);
+
         return $this->mailer->sendReservationTicket([
             'to' => $reservation['guest_email'],
             'movie' => $reservation['title'],
@@ -981,6 +1050,16 @@ final class CinemaRepository
             'time' => format_time_local($reservation['screening_time']),
             'hall' => $reservation['hall_name'],
             'seats' => $this->reservationSeatLabels((int) $reservation['id']),
+            'status' => $isPaid ? 'Plaćena' : 'Rezervisana',
+            'payment_status' => $isPaid ? 'Plaćena' : 'Nije plaćena',
+            'starts_at' => $startsAt,
+            'ticket_code' => $ticketCode,
+            'qr_code_url' => 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' . rawurlencode($ticketCode),
+            'payment_url' => $isPaid ? '' : current_full_url('otkazi-rezervaciju', [
+                'rid' => $reservation['id'],
+                'token' => $reservation['guest_token'],
+                'pay' => '1',
+            ]),
             'cancel_url' => current_full_url('otkazi-rezervaciju', [
                 'rid' => $reservation['id'],
                 'token' => $reservation['guest_token'],
