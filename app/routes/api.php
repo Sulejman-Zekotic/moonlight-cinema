@@ -103,7 +103,7 @@ try {
             json_success($result);
 
         case 'mc_pay_guest_reservation':
-            $result = $repo->payGuestReservation(
+            $result = $repo->payGuestPendingReservation(
                 (int) request_value('reservation_id', 0),
                 (string) request_value('token', ''),
                 $_FILES['disability_proof'] ?? null
