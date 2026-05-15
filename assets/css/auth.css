@@ -1,5 +1,9 @@
 .mc-auth-page {
+  min-height: calc(100vh - 88px);
   padding: 28px 12px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .mc-auth-wrapper {
@@ -7,7 +11,7 @@
   margin: 0 auto;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   gap: 20px;
   flex-wrap: wrap;
 }
@@ -178,7 +182,9 @@
 
 @media (max-width: 640px) {
   .mc-auth-page {
+    min-height: calc(100vh - 72px);
     padding: 20px 8px 6px;
+    align-items: center;
   }
 
   .mc-auth-wrapper {
