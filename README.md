@@ -10,6 +10,22 @@ The application allows users to browse movies, view movie details, select availa
 
 > Note: This is a demo/portfolio application. It does not use real payment processing.
 
+## Demo Credentials
+
+### Admin Account
+
+```text
+Email: admin@moonlightcinema.ba
+Password: Admin123!
+```
+
+### User Account
+
+```text
+Email: user@moonlightcinema.local
+Password: User1234!
+```
+
 ## Team
 
 This project was developed by:
@@ -75,7 +91,7 @@ This project was developed by:
 
 ### Ticket Email
 
-![Ticket email](screenshots/mail.PNG)
+![Ticket email](screenshots/mail.png)
 
 ### Mobile Tickets
 
