@@ -1,60 +1,110 @@
 # Moonlight Cinema
 
-Standalone kino aplikacija napravljena bez WordPress zavisnosti.
+Moonlight Cinema is a cinema reservation web application built as a portfolio project for demonstrating full-stack web development, database integration, responsive UI, reservation workflows, email ticket delivery, and cloud deployment.
 
-## Struktura
+The application allows users to browse movies, view movie details, select available screening times, choose seats, create reservations, receive an email ticket with a QR code, view their tickets, and cancel reservations. The project also includes an admin side for managing cinema data such as movies, screenings, halls, seats, reservations, and pricing.
 
-- `index.php` front controller
-- `app/` backend logika, rutiranje i prikazi
-- `assets/` CSS, JavaScript i medijski fajlovi
-- `storage/` lokalna baza, sesije, logovi i uploadi
-- `vendor/tcpdf/` generisanje PDF karata
-- `web.config` Azure / IIS pravila
-- `.htaccess` Apache pravila
+## Live Demo
 
-## Lokalno pokretanje
+[Open live demo](https://moonlightcinema-afgwhdb4ffhpcsh7.northeurope-01.azurewebsites.net)
 
-Ako koristiš XAMPP Apache, postavi document root na folder:
+> Note: This is a demo/portfolio application. It does not use real payment processing.
 
-`C:\xampp\htdocs\moonlight\moonlight-cinema-app`
+## Team
 
-Za PHP built-in server:
+This project was developed by:
 
-```powershell
-C:\xampp\php\php.exe -S 127.0.0.1:8010 -t C:\xampp\htdocs\moonlight\moonlight-cinema-app
-```
+- **Sulejman Zekotic** – backend development, database integration, reservation logic, Azure deployment, project configuration, documentation
+- **Amina Ahmić** – frontend UI, responsive design, testing, screenshots, documentation, feature planning
 
-## Podrazumijevana lokalna baza
+## Features
 
-Aplikacija lokalno koristi SQLite fajl:
+### User Features
 
-`storage/moonlight.sqlite`
+- Browse available movies
+- View movie details
+- View available screening times
+- Select seats through an interactive seat picker
+- Create a reservation
+- Receive an email ticket with a QR code
+- View existing tickets
+- Cancel reservations
+- Responsive design for desktop and mobile devices
 
-Prvi start automatski pravi šemu i demo podatke.
+### Admin Features
 
-## Test nalozi
+- Manage movies
+- Manage screenings
+- Manage halls and seats
+- View and manage reservations
+- Configure pricing
+- Control cinema-related data through the admin interface
 
-- Admin: `admin@moonlightcinema.ba` / `Admin123!`
-- Korisnik: `sulejman@moonlightcinema.ba` / `Moonlight123!`
+## Tech Stack
 
-## Azure postavke
+- PHP
+- JavaScript
+- HTML
+- CSS
+- SQLite / MySQL
+- Composer
+- Azure App Service
+- GitHub
 
-Za Azure App Service možeš ostati na ovom front controller pristupu. `web.config` je već dodat za IIS rewrite.
+## Screenshots
 
-Preporuka za produkciju je MySQL baza umjesto SQLite. Potrebni App Settings:
+### Home Page
 
-- `MC_DB_DRIVER=mysql`
-- `MC_DB_HOST=...`
-- `MC_DB_PORT=3306`
-- `MC_DB_NAME=...`
-- `MC_DB_USER=...`
-- `MC_DB_PASS=...`
-- `MC_MAIL_FROM=info@moonlightcinema.ba`
+![Home page](docs/screenshots/home-desktop.png)
 
-Ako ostavljaš SQLite i na serveru, `storage/` mora biti upisiv direktorij.
+### Movie Details
 
-## Napomene
+![Movie details](docs/screenshots/movie-details-desktop.png)
 
-- Guest rezervacije upisuju link za otkazivanje u `storage/logs/mail.log`
-- Plaćene karte se preuzimaju kao PDF
-- Admin dio podržava statistiku, pregled projekcija, ručno dodavanje i auto-generisanje rasporeda
+### Seat Selection
+
+![Seat selection](docs/screenshots/seat-selection-desktop.png)
+
+### Reservation Modal - First Step
+
+![Reservation modal first step](docs/screenshots/reservation-modal-first-desktop.png)
+
+### Reservation Modal - Second Step
+
+![Reservation modal second step](docs/screenshots/reservation-modal-second-desktop.png)
+
+### Ticket Email
+
+![Ticket email](docs/screenshots/ticket-email.png)
+
+### Mobile Tickets
+
+![Mobile tickets](docs/screenshots/my-tickets-mobile.png)
+
+## Project Structure
+
+```text
+moonlight-cinema-app/
+├── .github/
+├── app/
+│   ├── config.php
+│   ├── bootstrap.php
+│   ├── Database.php
+│   ├── Auth.php
+│   ├── Mailer.php
+│   ├── CinemaRepository.php
+│   └── helpers.php
+├── assets/
+│   ├── css/
+│   ├── js/
+│   └── images/
+├── docs/
+│   └── screenshots/
+├── storage/
+├── vendor/
+├── .gitignore
+├── .htaccess
+├── README.md
+├── README_AZURE_DEPLOY.md
+├── index.php
+└── web.config
