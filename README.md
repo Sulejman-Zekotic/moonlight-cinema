@@ -55,31 +55,31 @@ This project was developed by:
 
 ### Home Page
 
-![Home page](docs/screenshots/home-desktop.png)
+![Home page](screenshots/home-desktop.png)
 
 ### Movie Details
 
-![Movie details](docs/screenshots/movie-details-desktop.png)
+![Movie details](screenshots/movie-details-desktop.png)
 
 ### Seat Selection
 
-![Seat selection](docs/screenshots/seat-selection-desktop.png)
+![Seat selection](screenshots/seat-selection-desktop.png)
 
 ### Reservation Modal - First Step
 
-![Reservation modal first step](docs/screenshots/reservation-modal-first-desktop.png)
+![Reservation modal first step](screenshots/reservation-modal-first-desktop.png)
 
 ### Reservation Modal - Second Step
 
-![Reservation modal second step](docs/screenshots/reservation-modal-second-desktop.png)
+![Reservation modal second step](screenshots/reservation-modal-second-desktop.png)
 
 ### Ticket Email
 
-![Ticket email](docs/screenshots/ticket-email.png)
+![Ticket email](screenshots/ticket-email.png)
 
 ### Mobile Tickets
 
-![Mobile tickets](docs/screenshots/my-tickets-mobile.png)
+![Mobile tickets](screenshots/my-tickets-mobile.png)
 
 ## Project Structure
 
