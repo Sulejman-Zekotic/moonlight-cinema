@@ -75,7 +75,7 @@ This project was developed by:
 
 ### Ticket Email
 
-![Ticket email](screenshots/ticket-mail.png)
+![Ticket email](screenshots/ticket-mail.PNG)
 
 ### Mobile Tickets
 
