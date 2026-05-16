@@ -67,15 +67,15 @@ This project was developed by:
 
 ### Reservation Modal - First Step
 
-![Reservation modal first step](screenshots/reservation-modal-first-desktop.png)
+![Reservation modal first step](screenshots/reservation-modal-first-desktop.PNG)
 
 ### Reservation Modal - Second Step
 
-![Reservation modal second step](screenshots/reservation-modal-second-desktop.png)
+![Reservation modal second step](screenshots/reservation-modal-second-desktop.PNG)
 
 ### Ticket Email
 
-![Ticket email](screenshots/ticket-email.png)
+![Ticket email](screenshots/ticket-mail.png)
 
 ### Mobile Tickets
 
