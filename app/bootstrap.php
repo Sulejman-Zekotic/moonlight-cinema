@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+// Sva vremena (projekcije, rezervacije) su po bh. vremenu, bez obzira gdje je server.
+date_default_timezone_set('Europe/Sarajevo');
+
 require_once __DIR__ . '/helpers.php';
 require_once __DIR__ . '/Database.php';
 require_once __DIR__ . '/Auth.php';
@@ -23,14 +26,15 @@ if (session_status() === PHP_SESSION_NONE) {
         $_SERVER['HTTPS'] = 'on';
     }
 
-    $sessionPath = '/tmp/moonlight-sessions';
+    // Sesije se čuvaju u storage/sessions (radi i na shared hostingu gdje /tmp nije dostupan).
+    $sessionPath = __DIR__ . '/../storage/sessions';
 
     if (!is_dir($sessionPath)) {
-        mkdir($sessionPath, 0777, true);
+        @mkdir($sessionPath, 0755, true);
     }
 
     if (!is_writable($sessionPath)) {
-        chmod($sessionPath, 0777);
+        $sessionPath = sys_get_temp_dir();
     }
 
     $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');

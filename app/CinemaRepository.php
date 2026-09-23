@@ -8,6 +8,19 @@ final class CinemaRepository
     {
     }
 
+    /**
+     * "datum vrijeme" projekcije kao SQL izraz.
+     * SQLite spaja stringove sa ||, a MySQL koristi CONCAT() (u MySQL-u je || logicki OR).
+     */
+    private function screeningDateTimeSql(string $alias = ''): string
+    {
+        $prefix = $alias !== '' ? $alias . '.' : '';
+
+        return $this->db->driver() === 'mysql'
+            ? "CONCAT({$prefix}screening_date, ' ', {$prefix}screening_time)"
+            : "({$prefix}screening_date || ' ' || {$prefix}screening_time)";
+    }
+
     public function now(): string
     {
         return date('Y-m-d H:i:s');
@@ -26,10 +39,10 @@ final class CinemaRepository
     public function heroMovie(): ?array
     {
         $row = $this->db->fetch(
-            'SELECT m.*, MIN(s.screening_date || " " || s.screening_time) AS next_screening
+            'SELECT m.*, MIN(' . $this->screeningDateTimeSql('s') . ') AS next_screening
              FROM movies m
              JOIN screenings s ON s.movie_id = m.id
-             WHERE m.status = "now_showing" AND s.status = "active" AND (s.screening_date || " " || s.screening_time) >= :now
+             WHERE m.status = "now_showing" AND s.status = "active" AND ' . $this->screeningDateTimeSql('s') . ' >= :now
              GROUP BY m.id
              ORDER BY next_screening ASC
              LIMIT 1',
@@ -205,7 +218,7 @@ final class CinemaRepository
             'SELECT COUNT(*)
              FROM screenings s
              JOIN seats seat ON seat.screening_id = s.id
-             WHERE s.movie_id = :movie_id AND s.status = "active" AND (s.screening_date || " " || s.screening_time) >= :now AND seat.status = "available"',
+             WHERE s.movie_id = :movie_id AND s.status = "active" AND ' . $this->screeningDateTimeSql('s') . ' >= :now AND seat.status = "available"',
             ['movie_id' => $movieId, 'now' => $this->now()]
         );
 
@@ -217,7 +230,7 @@ final class CinemaRepository
         $rows = $this->db->fetchAll(
             'SELECT DISTINCT screening_date
              FROM screenings
-             WHERE movie_id = :movie_id AND status = "active" AND (screening_date || " " || screening_time) >= :now
+             WHERE movie_id = :movie_id AND status = "active" AND ' . $this->screeningDateTimeSql() . ' >= :now
              ORDER BY screening_date ASC',
             ['movie_id' => $movieId, 'now' => $this->now()]
         );

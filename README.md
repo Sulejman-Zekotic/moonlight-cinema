@@ -6,7 +6,7 @@ The application allows users to browse movies, view movie details, select availa
 
 ## Live Demo
 
-[Open live demo](https://moonlightcinema-afgwhdb4ffhpcsh7.northeurope-01.azurewebsites.net)
+[Open live demo](https://moonlight-cinema.freedev.app)
 
 > Note: This is a demo/portfolio application. It does not use real payment processing.
 
@@ -22,15 +22,15 @@ Password: Admin123!
 ### User Account
 
 ```text
-Email: user@moonlightcinema.local
-Password: User1234!
+Email: sulejman@moonlightcinema.ba
+Password: Moonlight123!
 ```
 
 ## Team
 
 This project was developed by:
 
-- **Sulejman Zekotic** – backend development, database integration, reservation logic, Azure deployment, project configuration, documentation
+- **Sulejman Zekotic** – backend development, database integration, reservation logic, deployment, project configuration, documentation
 - **Amina Ahmić** – frontend UI, responsive design, testing, screenshots, documentation, feature planning
 
 ## Features
@@ -64,7 +64,8 @@ This project was developed by:
 - CSS
 - SQLite / MySQL
 - Composer
-- Azure App Service
+- InfinityFree (PHP + MySQL hosting)
+- Brevo SMTP (email tickets)
 - GitHub
 
 ## Screenshots
@@ -223,29 +224,32 @@ Admin credentials should not be committed to the repository.
 
 ## Deployment
 
-The application is deployed on Azure App Service.
+The live demo runs on free hosting:
 
-Deployment notes are available in:
+- **Hosting:** InfinityFree (Apache + PHP 8)
+- **Database:** MySQL (schema and demo data are created automatically by `app/Installer.php`)
+- **Email:** Brevo SMTP relay for reservation tickets and password reset links
 
-```text
-README_AZURE_DEPLOY.md
-```
+The project was originally deployed on Azure App Service and later moved to free hosting.
+During the migration from SQLite to MySQL, a compatibility bug was found and fixed:
+SQLite uses `||` for string concatenation, while MySQL treats `||` as logical OR,
+so screening date/time comparisons always failed. The repository now builds these
+expressions per database driver (`CONCAT()` on MySQL).
 
-The Azure deployment includes configuration for:
+### Configuration
 
-- PHP hosting
-- Application routing
-- Environment variables
-- Database configuration
-- Mail configuration
-- Session storage
-- Production deployment setup
+Server settings are read from environment variables or, on shared hosting without
+environment variables, from `app/config.local.php`:
+
+1. Copy `app/config.local.php.example` to `app/config.local.php`
+2. Fill in database and SMTP credentials
+3. `app/config.local.php` is listed in `.gitignore` and must never be committed
+
+Direct browser access to `app/` and `storage/` is blocked with `.htaccess`.
 
 ## Documentation
 
-Additional project documentation:
-
-- `README_AZURE_DEPLOY.md` - Azure deployment notes
+- `app/config.local.php.example` - configuration template for shared hosting
 - `screenshots/` - Application screenshots used in the README
 
 ## Security Notes
